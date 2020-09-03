@@ -1,8 +1,9 @@
-html, body {
+html, body, #root {
     height: 100%;
+    width: 100%;
 }
 
-body {
+body, #root {
     display: flex;
     margin: 0;
 }

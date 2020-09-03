@@ -3,10 +3,15 @@ import styled from 'styled-components';
 const CardDiv = styled.div.attrs(props => ({
     baseColor: props.baseColor,
 }))`
-    border: .05rem solid gray;
+    border: 1px solid gray;
+    border-radius: 2px;
     background-color: ${props => props.baseColor};
-    padding: 0 1.5rem;
-    margin: 0.5rem 0.5rem;
+    padding: 5px 10px;
+    margin: 5px 10px 7.5px;
 `
 
-export default CardDiv;
+const CardTitle = styled.h5`
+    
+`
+
+export { CardDiv, CardTitle };

@@ -1,19 +1,29 @@
 import React from 'react';
 
-import CardDiv from '../styles/CardDiv';
+import { CardDiv, CardTitle } from '../styles/Card';
+
+import { Draggable } from 'react-beautiful-dnd';
 
 function Card(props) {
-    const { title, assigned, children } = props;
+    const { card, index } = props;
+    const { title, id, content } = card;
 
     return(
-        <CardDiv baseColor="white">
-            <h1>
-                {title}
-            </h1>
-            <p>
-                {children}
-            </p>
-        </CardDiv>
+        <Draggable draggableId={id} index={index}>
+            {(provided, snapshot) => (
+                <CardDiv
+                    baseColor="white"
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                >
+                    <CardTitle>
+                        {title}
+                    </CardTitle>
+                    {content}
+                </CardDiv>
+            )}
+        </Draggable>
     );
 }
 
