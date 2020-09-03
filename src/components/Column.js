@@ -21,7 +21,7 @@ function Column(props) {
                         {...provided.droppableProps}
                     >
                         {children.map((item, index) => (
-                            <Card key={item.id} card={item} index={index} />
+                            (<Card key={item.id} card={item} index={index} />)
                         ))}
                     {provided.placeholder}
                     </ListDiv>
