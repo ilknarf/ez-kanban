@@ -13,6 +13,11 @@ const LogoDiv = styled.a`
     border-radius: 2em;
     
     margin: .75em 0;
+    
+    &:hover {
+        text-decoration: none;
+        cursor: pointer;
+    }
 `
 
 export { LogoText, LogoDiv };

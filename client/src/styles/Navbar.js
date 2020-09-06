@@ -22,6 +22,15 @@ const NavbarButton = styled.button`
     color: inherit;
     background-color: inherit;
     border: 0px;
+    
+    &:focus {
+        border: none;
+        outline: none;
+    }
+    
+    &:hover {
+        cursor: pointer;
+    }
 `
 
 const MenuButtonDiv = styled(NavbarButton)`
@@ -31,7 +40,7 @@ const MenuButtonDiv = styled(NavbarButton)`
     background-color: white;
         
     &:hover {
-        box-shadow: 0px 2px 4px 1px #888888;
+        box-shadow: 0px 2px 4px 0px #888888;
     }
 `
 
