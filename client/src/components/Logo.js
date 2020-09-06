@@ -1,11 +1,14 @@
-import { Button } from '../styles/Navbar';
 import React from 'react';
+
+import { LogoText, LogoDiv } from '../styles/Logo';
 
 function Logo() {
     return (
-        <Button>
-            EZ-Kanban
-        </Button>
+        <LogoDiv>
+            <LogoText>
+                EZ-Kanban
+            </LogoText>
+        </LogoDiv>
     )
 }
 

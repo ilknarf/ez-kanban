@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const NavbarContainer = styled.nav`
-     padding: 1em 30px;
+     padding: 1em 1.5rem;
      
      display: flex;
      flex-direction: row;
@@ -9,27 +9,38 @@ const NavbarContainer = styled.nav`
      background-color: #77caea;
 `
 
-const Button = styled.div`
-    height: 1.25em;
-    line-height: 1.25em;
-    padding: 0.5em 1em;
+const NavbarButton = styled.button`
+    display: block;
     
-    margin: 0.75em 0;
+    line-height: 3rem;
+    padding: 1em 1.5em;
+    margin: .75em 0em;
+    
+    text-decoration: none;
+    text-align: center;
+    
+    color: inherit;
+    background-color: inherit;
+    border: 0px;
 `
 
-const MenuButton = styled(Button)`
-    border-radius: 1.25em;
-    box-shadow: 0px 2px 2px 0px #888888;
-    
+const MenuButtonDiv = styled(NavbarButton)`
+    border-radius: 2em;
+    box-shadow: 0px 1px 2px 0px #888888;
+
     background-color: white;
-    
+        
     &:hover {
         box-shadow: 0px 2px 4px 1px #888888;
     }
+`
+
+const MenuItemText = styled.h4`
+    color: #77caea;
 `
 
 const MenuSpacer = styled.div`
     flex: 1;
 `
 
-export { NavbarContainer, Button, MenuButton, MenuSpacer };
+export { NavbarContainer, NavbarButton, MenuButtonDiv, MenuSpacer, MenuItemText };

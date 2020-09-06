@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NavbarContainer, Button, MenuButton, MenuSpacer } from '../styles/Navbar';
+import { NavbarContainer, MenuButtonDiv, MenuSpacer, MenuItemText } from '../styles/Navbar';
 
 import Logo from '../components/Logo';
 
@@ -9,9 +9,11 @@ function Navbar(props) {
         <NavbarContainer>
             <Logo />
             <MenuSpacer />
-            <MenuButton>
-                Hello
-            </MenuButton>
+            <MenuButtonDiv>
+                <MenuItemText>
+                    Menu
+                </MenuItemText>
+            </MenuButtonDiv>
         </NavbarContainer>
     )
 }

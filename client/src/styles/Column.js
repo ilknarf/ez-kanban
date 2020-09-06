@@ -4,7 +4,7 @@ const ColumnDiv = styled.div`
     flex: 1;
     background-color: #e3e1de;
     border-radius: 2px;
-    ${props => props.isDraggingOver? 'box-shadow: 0px 1px 3px 0px #888888;': null} 
+    box-shadow: 0px 1px ${props => props.isDraggingOver? '3px 1px': '3px 0px'} #888888;
     transition: box-shadow 0.1s linear;
     margin: 0rem .5rem .25rem;
     
