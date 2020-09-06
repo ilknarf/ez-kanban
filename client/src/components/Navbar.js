@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { NavbarContainer, MenuButton, MenuSpacer } from '../styles/Navbar';
+import { NavbarContainer, Button, MenuButton, MenuSpacer } from '../styles/Navbar';
+
+import Logo from '../components/Logo';
 
 function Navbar(props) {
     return(
         <NavbarContainer>
-            <div>
-                Hello
-            </div>
+            <Logo />
             <MenuSpacer />
             <MenuButton>
                 Hello

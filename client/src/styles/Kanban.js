@@ -4,7 +4,7 @@ const KanbanContainer = styled.div`
     display: flex;
     flex-direction: row;
     flex: 1;
-    margin: 0px 20px 10px;
+    padding: .5rem 1rem .5rem;
 `
 
 export { KanbanContainer };
