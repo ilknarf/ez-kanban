@@ -16,6 +16,9 @@ const CardDiv = styled.div`
     background-color: white;
     transition background-color 0.12s ease-in;
     
+    ${props => props.isDragging? 'box-shadow: 0px 1px 5px 1px #888888;': null} 
+    transition: box-shadow 0.1s linear;
+    
     padding: 5px 10px;
     margin: 5px 5px 7.5px;
 

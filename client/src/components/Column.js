@@ -10,7 +10,7 @@ function Column(props) {
     return (
         <Droppable droppableId={id}>
             {(provided, snapshot) => (
-                <ColumnDiv>
+                <ColumnDiv isDraggingOver={snapshot.isDraggingOver}>
                     <ColumnHeader>
                         {name}
                     </ColumnHeader>
