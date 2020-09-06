@@ -12,10 +12,10 @@ function Card(props) {
         <Draggable draggableId={id} index={index}>
             {(provided, snapshot) => (
                 <CardDiv
-                    baseColor="white"
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
+                    isDragging={snapshot.isDragging}
                 >
                     <CardTitle>
                         {title}

@@ -1,14 +1,10 @@
 import styled from 'styled-components';
 
-const ColumnDiv = styled.div.attrs(props => ({
-    baseColor: props.baseColor,
-}))`
+const ColumnDiv = styled.div`
     flex: 1;
-    background-color: ${props => props.baseColor || 'lightblue'};
-    border: 1px solid #807f7d;
+    background-color: #e3e1de;
     border-radius: 2px;
-    margin: 10px;
-    box-shadow: 0px 0px 1px 1px grey;
+    margin: 5px;
     
     display: flex;
     flex-direction: column;
@@ -21,9 +17,8 @@ const ListDiv=styled.div`
     flex-direction: column;
 `
 
-const ColumnHeader = styled.h3`
-    padding: 5px 10px 2.5px;
-    background-color: lightgreen;
+const ColumnHeader = styled.h5`
+    padding: 10px;
 `
 
 export { ColumnDiv, ColumnHeader, ListDiv };

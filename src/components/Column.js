@@ -10,9 +10,7 @@ function Column(props) {
     return (
         <Droppable droppableId={id}>
             {(provided, snapshot) => (
-                <ColumnDiv
-                    baseColor="lightgray"
-                >
+                <ColumnDiv>
                     <ColumnHeader>
                         {name}
                     </ColumnHeader>

@@ -1,7 +1,8 @@
 import React, { useState, useReducer }  from 'react';
 
+import { KanbanContainer } from '../styles/Kanban';
+
 import { DragDropContext } from 'react-beautiful-dnd';
-import Baseline from '../styles/Baseline';
 import Column from './Column';
 
 const data = {
@@ -84,7 +85,7 @@ function Kanban() {
     }
 
     return (
-        <Baseline>
+        <KanbanContainer>
             <DragDropContext onDragEnd={onDragEnd}>
                 {data.columnOrder.map(colId => (
                         <Column key={colId} id={colId} name={columns[colId].name}>
@@ -93,7 +94,7 @@ function Kanban() {
                     )
                 )}
             </DragDropContext>
-        </Baseline>
+        </KanbanContainer>
     );
 }
 
