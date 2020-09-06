@@ -1,5 +1,5 @@
 {
-  "name": "ez-kanban",
+  "name": "ez-kanban-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
