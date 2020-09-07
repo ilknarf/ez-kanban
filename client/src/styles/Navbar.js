@@ -33,6 +33,10 @@ const NavbarButton = styled.button`
     }
 `
 
+const MenuItemText = styled.h4`
+    color: black;
+`
+
 const MenuButtonDiv = styled(NavbarButton)`
     border-radius: 2em;
     box-shadow: 0px 1px 2px 0px #888888;
@@ -42,10 +46,10 @@ const MenuButtonDiv = styled(NavbarButton)`
     &:hover {
         box-shadow: 0px 2px 4px 0px #888888;
     }
-`
-
-const MenuItemText = styled.h4`
-    color: #77caea;
+    
+    &:hover ${MenuItemText} {
+        color: #77caea;
+    }
 `
 
 const MenuSpacer = styled.div`
