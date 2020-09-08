@@ -2,9 +2,18 @@ package api
 
 import "time"
 
-type StateResponse struct {
-	*MetaData
+type ActionResponse struct {
 	ResponseCode int
+	Message string
+}
+
+type StateResponse struct {
+	ResponseCode int
+	State State
+}
+
+type State struct {
+	*MetaData
 
 	Todo       []Card
 	Waiting    []Card
@@ -15,9 +24,15 @@ type StateResponse struct {
 type MetaData struct {
 	Name        string
 	Tag         string
+	Id          string
 	DateCreated time.Time
 	DateUpdated time.Time
 }
 
 type Card struct {
+	Title       string
+	Description string
+	Id          string
+	DateCreated time.Time
+	DateUpdated time.Time
 }
