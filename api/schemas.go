@@ -2,18 +2,22 @@ package api
 
 import "time"
 
+// API response types
+
 type ActionResponse struct {
 	ResponseCode int
 	Message string
 }
 
-type StateResponse struct {
+type SnapshotResponse struct {
 	ResponseCode int
 	State State
 }
 
+// Board data structures
+
 type State struct {
-	*MetaData
+	MetaData
 
 	Todo       []Card
 	Waiting    []Card
@@ -36,3 +40,18 @@ type Card struct {
 	DateCreated time.Time
 	DateUpdated time.Time
 }
+
+// Request data structures
+
+type MoveRequest struct {
+	BoardId string
+	CardId  string
+	PrevIndex string
+	NewIndex string
+}
+
+// probaby should add more metadata
+type AddCardRequest struct {
+	NewCard Card
+}
+
