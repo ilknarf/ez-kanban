@@ -6,12 +6,12 @@ import "time"
 
 type ActionResponse struct {
 	ResponseCode int
-	Message string
+	Message      string
 }
 
 type SnapshotResponse struct {
 	ResponseCode int
-	State State
+	State        State
 }
 
 // Board data structures
@@ -43,15 +43,14 @@ type Card struct {
 
 // Request data structures
 
-type MoveRequest struct {
-	BoardId string
-	CardId  string
+type MoveCardRequest struct {
+	BoardId   string
+	CardId    string
 	PrevIndex string
-	NewIndex string
+	NewIndex  string
 }
 
 // probaby should add more metadata
 type AddCardRequest struct {
 	NewCard Card
 }
-

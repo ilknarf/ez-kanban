@@ -4,28 +4,27 @@ import (
 	"time"
 )
 
-
 // placeholder values
 var card1 = Card{
-	Title: "Title 1",
+	Title:       "Title 1",
 	Description: "This is a description",
-	Id: "String",
+	Id:          "String",
 	DateCreated: time.Now(),
 	DateUpdated: time.Now(),
 }
 
 var card2 = Card{
-	Title: "Title 2",
+	Title:       "Title 2",
 	Description: "This is another description",
-	Id: "String",
+	Id:          "String",
 	DateCreated: time.Now(),
 	DateUpdated: time.Now(),
 }
 
 var card3 = Card{
-	Title: "Title 3",
+	Title:       "Title 3",
 	Description: "This is a description",
-	Id: "String",
+	Id:          "String",
 	DateCreated: time.Now(),
 	DateUpdated: time.Now(),
 }
@@ -39,24 +38,26 @@ var metadata = MetaData{
 }
 
 var state = State{
-	MetaData: metadata,
-	Todo: []Card{card1},
-	Waiting: []Card{card2, card3},
+	MetaData:   metadata,
+	Todo:       []Card{card1},
+	Waiting:    []Card{card2, card3},
 	InProgress: []Card{},
-	Finished: []Card{},
+	Finished:   []Card{},
 }
 
 var snapshotResponse = SnapshotResponse{
 	ResponseCode: 200,
-	State: state,
+	State:        state,
 }
 
 func GetSnapshot(index string) SnapshotResponse {
 	return snapshotResponse
 }
 
-func AddCard(c Card) ActionResponse {
-
+func AddCard(req AddCardRequest) ActionResponse {
+	return ActionResponse{}
 }
 
-func MoveCard()
+func MoveCard(req MoveCardRequest) ActionResponse {
+	return ActionResponse{}
+}
