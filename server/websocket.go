@@ -69,18 +69,24 @@ func (c *WebSocketClient) writePump() {
 	}()
 	for {
 		select {
-		case message, ok := <- c.send:
+		case message, ok := <-c.send:
 			if !ok {
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				c.conn.WriteMessage(websocket.CloseMessage, nil)
 				return
 			}
 
 			response := WebsocketResponse{[]interface{}{message}}
 			n := len(c.send)
 			for i := 0; i < n; i++ {
-				response.actions = append(response.actions, <- c.send)
+				response.actions = append(response.actions, <-c.send)
 			}
 			c.conn.WriteJSON(response)
+
+		case <-ticker.C:
+			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				return
+			}
 		}
 	}
 
