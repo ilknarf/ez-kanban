@@ -4,7 +4,7 @@ type Hub struct {
 	boardId string
 	clients map[*WebSocketClient]bool
 
-	broadcast  chan []byte
+	broadcast  chan interface{}
 	register   chan *WebSocketClient
 	unregister chan *WebSocketClient
 }
@@ -12,7 +12,7 @@ type Hub struct {
 func newHub(boardId string) *Hub {
 	return &Hub{
 		boardId: boardId,
-		broadcast: make(chan []byte),
+		broadcast: make(chan []interface{}),
 		register: make(chan *WebSocketClient),
 		unregister: make(chan *WebSocketClient),
 		clients: make(map[*WebSocketClient]bool),
