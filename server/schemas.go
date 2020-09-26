@@ -9,7 +9,3 @@ type WebsocketRequest struct {
 	objectKey string
 	arguments []int
 }
-
-type WebsocketResponse struct {
-	actions []interface{}
-}

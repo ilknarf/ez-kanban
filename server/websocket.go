@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -30,7 +31,7 @@ type WebSocketClient struct {
 	userId string
 	hub    *Hub
 	conn   *websocket.Conn
-	send   chan *WebsocketRequest
+	send   chan interface{}
 }
 
 // readPump runs one goroutine per connection, managing and sending wss messages
@@ -47,8 +48,7 @@ func (c *WebSocketClient) readPump() {
 	})
 
 	for {
-		message := WebsocketRequest{}
-		err := c.conn.ReadJSON(&message)
+		_, b, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error: %v", err)
@@ -56,7 +56,7 @@ func (c *WebSocketClient) readPump() {
 			break
 		}
 		// TODO add backend logic
-		c.hub.broadcast <- &message
+		c.hub.broadcast <- b
 	}
 }
 
@@ -74,12 +74,15 @@ func (c *WebSocketClient) writePump() {
 				return
 			}
 
-			response := WebsocketResponse{[]interface{}{message}}
+			response := []interface{}{message}
 			n := len(c.send)
 			for i := 0; i < n; i++ {
-				response.actions = append(response.actions, <-c.send)
+				response = append(response, <-c.send)
 			}
-			c.conn.WriteJSON(response)
+			var b []byte
+			json.Unmarshal(b, response)
+
+			c.conn.WriteMessage(websocket.TextMessage, b)
 
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
@@ -104,7 +107,7 @@ func establishConnection(w http.ResponseWriter, r *http.Request, h *Hub) {
 		userId: "placeholder", // TODO add logic
 		hub: h,
 		conn: conn,
-		send: make(chan *WebsocketRequest),
+		send: make(chan interface{}),
 	}
 
 	// run goroutines for connection broadcasting

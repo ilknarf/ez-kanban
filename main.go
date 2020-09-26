@@ -26,6 +26,6 @@ func main() {
 		fmt.Fprint(w, "Hello!")
 	})
 
-	log.Printf("Serving on port %s.", port)
+	log.Printf("Serving on port %s", port)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
