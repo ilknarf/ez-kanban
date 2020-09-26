@@ -2,18 +2,6 @@ package api
 
 import "time"
 
-// API response types
-
-type ActionResponse struct {
-	ResponseCode int
-	Message      string
-}
-
-type SnapshotResponse struct {
-	ResponseCode int
-	State        State
-}
-
 // Board data structures
 
 type State struct {

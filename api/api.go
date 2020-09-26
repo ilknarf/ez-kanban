@@ -1,6 +1,7 @@
 package api
 
 import (
+	"net/http"
 	"time"
 )
 
@@ -45,19 +46,14 @@ var state = State{
 	Finished:   []Card{},
 }
 
-var snapshotResponse = SnapshotResponse{
-	ResponseCode: 200,
-	State:        state,
+func GetSnapshot(index string) State {
+	return state
 }
 
-func GetSnapshot(index string) SnapshotResponse {
-	return snapshotResponse
+func AddCard(r *http.Request) (Card, error) {
+	return Card{}, nil
 }
 
-func AddCard(req AddCardRequest) ActionResponse {
-	return ActionResponse{}
-}
-
-func MoveCard(req MoveCardRequest) ActionResponse {
-	return ActionResponse{}
+func MoveCard(r *http.Request) error {
+	return nil
 }
