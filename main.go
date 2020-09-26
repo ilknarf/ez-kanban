@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"github.com/ilknarf/ez-kanban/server"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +18,14 @@ func init() {
 }
 
 func main() {
+	hub := server.NewHub("stub")
+	go hub.Run()
+
+	http.HandleFunc("/wss", server.NewWebSocketHandler(hub))
+	http.HandleFunc("/hello", func (w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Hello!")
+	})
+
 	log.Printf("Serving on port %s.", port)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

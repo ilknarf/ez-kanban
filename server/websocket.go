@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -31,14 +30,14 @@ type WebSocketClient struct {
 	userId string
 	hub    *Hub
 	conn   *websocket.Conn
-	send   chan interface{}
+	send   chan *WebsocketRequest
 }
 
 // readPump runs one goroutine per connection, managing and sending wss messages
 func (c *WebSocketClient) readPump() {
 	defer func() {
 		c.hub.unregister <- c
-		c.conn.Close()
+		_ = c.conn.Close()
 	}()
 	// set
 	c.conn.SetReadLimit(maxMessageSize)
@@ -57,7 +56,7 @@ func (c *WebSocketClient) readPump() {
 			break
 		}
 		// TODO add backend logic
-		c.hub.broadcast <- message
+		c.hub.broadcast <- &message
 	}
 }
 
@@ -65,7 +64,7 @@ func (c *WebSocketClient) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
-		c.conn.Close()
+		_ = c.conn.Close()
 	}()
 	for {
 		select {
@@ -92,47 +91,23 @@ func (c *WebSocketClient) writePump() {
 
 }
 
-func establishConnection(w http.ResponseWriter, r *http.Request) {
+func establishConnection(w http.ResponseWriter, r *http.Request, h *Hub) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
-		response := ServerResponse{
-			message: "Unable to upgrade connection",
-		}
+		log.Println(err)
 
-		w.WriteHeader(500)
-
-		body, err := json.Marshal(response)
-		if err != nil {
-			log.Printf("Unable to marshal ServerResponse struct: %s\n", err)
-		}
-
-		_, err = w.Write(body)
-
-		if err != nil {
-			log.Println("Unable to write to ResponseWriter")
-		}
+		return
 	}
 
 	client := WebSocketClient{
-		userId: "placeholder", // STUB
+		userId: "placeholder", // TODO add logic
+		hub: h,
 		conn: conn,
+		send: make(chan *WebsocketRequest),
 	}
 
-	// Success
-	response := ServerResponse{}
-	w.WriteHeader(200)
-
-	body, err := json.Marshal(response)
-	if err != nil {
-		log.Printf("Unable to marshal ServerResponse struct: %s\n", err)
-	}
-
-	_, err = w.Write(body)
-	if err != nil {
-		log.Println("Unable to write to ResponseWriter")
-	}
-
+	// run goroutines for connection broadcasting
 	go client.writePump()
 	go client.readPump()
 }
