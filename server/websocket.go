@@ -116,4 +116,11 @@ func establishConnection(w http.ResponseWriter, r *http.Request, h *Hub) {
 	// run goroutines for connection broadcasting
 	go client.writePump()
 	go client.readPump()
+
+	source := r.Header.Get("X-Forwarded-For")
+	if source == "" {
+		source = r.RemoteAddr
+	}
+
+	log.Printf("new websocket connection from %s", source)
 }
