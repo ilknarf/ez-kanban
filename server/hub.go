@@ -38,6 +38,7 @@ func (h *Hub) Run() {
 			for client := range h.clients {
 				select {
 				case client.send <- message:
+					continue
 				default:
 					delete(h.clients, client)
 					close(client.send)

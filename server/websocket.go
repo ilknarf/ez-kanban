@@ -90,6 +90,7 @@ func (c *WebSocketClient) writePump() {
 			json.Unmarshal(b, response)
 
 			c.conn.WriteMessage(websocket.TextMessage, b)
+			log.Printf("message relayed to client %s@%s", c.UserId, c.Address)
 
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
@@ -112,13 +113,15 @@ func establishConnection(w http.ResponseWriter, r *http.Request, h *Hub) {
 
 	source := getRemoteAddress(r)
 
-	client := WebSocketClient{
+	client := &WebSocketClient{
 		UserId:  "placeholder", // TODO add logic
 		Address: source,
 		hub:     h,
 		conn:    conn,
 		send:    make(chan interface{}),
 	}
+
+	h.register <- client
 
 	// run goroutines for connection broadcasting
 	go client.writePump()
