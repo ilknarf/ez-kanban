@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -31,7 +30,7 @@ func (h *Hub) Run() {
 			h.clients[client] = true
 		case client := <- h.unregister:
 			if _, ok := h.clients[client]; ok {
-]				delete(h.clients, client)
+				delete(h.clients, client)
 				close(client.send)
 				log.Printf("Client %s@%s closed\n", client.UserId, client.Address)
 			}
