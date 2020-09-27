@@ -11,15 +11,3 @@ func NewWebSocketHandler(h *Hub) http.HandlerFunc {
 		establishConnection(w, r, h)
 	}
 }
-
-func NewAddCardHandler(h *Hub) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		card, err := api.AddCard(r)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		h.broadcast <- card
-	}
-}
