@@ -32,7 +32,7 @@ func (h *Hub) Run() {
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.send)
-				log.Printf("Client %s@%s closed\n", client.UserId, client.Address)
+				log.Printf("client %s@%s closed\n", client.UserId, client.Address)
 			}
 		case message := <- h.broadcast:
 			for client := range h.clients {
@@ -42,7 +42,7 @@ func (h *Hub) Run() {
 				default:
 					delete(h.clients, client)
 					close(client.send)
-					log.Printf("Client %s@%s closed\n", client.UserId, client.Address)
+					log.Printf("client %s@%s closed\n", client.UserId, client.Address)
 				}
 			}
 		}
