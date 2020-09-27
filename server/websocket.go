@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -94,7 +93,7 @@ func (c *WebSocketClient) writePump() {
 				break
 			}
 
-			log.Printf("message %s relayed to %s@%s", string(b), c.UserId, c.Address)
+			log.Printf("message relayed to %s@%s", c.UserId, c.Address)
 
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
