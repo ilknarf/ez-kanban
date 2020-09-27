@@ -31,10 +31,11 @@ var upgrader = websocket.Upgrader{
 }
 
 type WebSocketClient struct {
-	userId string
-	hub    *Hub
-	conn   *websocket.Conn
-	send   chan interface{}
+	UserId  string
+	Address string
+	hub     *Hub
+	conn    *websocket.Conn
+	send    chan interface{}
 }
 
 // readPump runs one goroutine per connection, managing and sending wss messages
@@ -58,7 +59,10 @@ func (c *WebSocketClient) readPump() {
 			}
 			break
 		}
+
 		// TODO add backend logic
+		log.Printf("received message from `%s` at %s\n", c.UserId, c.Address)
+
 		c.hub.broadcast <- b
 	}
 }
@@ -106,21 +110,28 @@ func establishConnection(w http.ResponseWriter, r *http.Request, h *Hub) {
 		return
 	}
 
+	source := getRemoteAddress(r)
+
 	client := WebSocketClient{
-		userId: "placeholder", // TODO add logic
-		hub: h,
-		conn: conn,
-		send: make(chan interface{}),
+		UserId:  "placeholder", // TODO add logic
+		Address: source,
+		hub:     h,
+		conn:    conn,
+		send:    make(chan interface{}),
 	}
 
 	// run goroutines for connection broadcasting
 	go client.writePump()
 	go client.readPump()
 
+	log.Printf("new websocket connection from %s\n", source)
+}
+
+func getRemoteAddress(r *http.Request) string {
 	source := r.Header.Get("X-Forwarded-For")
 	if source == "" {
 		source = r.RemoteAddr
 	}
 
-	log.Printf("new websocket connection from %s", source)
+	return source
 }

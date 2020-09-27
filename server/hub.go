@@ -1,6 +1,9 @@
 package server
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 type Hub struct {
 	boardId string
@@ -28,17 +31,18 @@ func (h *Hub) Run() {
 			h.clients[client] = true
 		case client := <- h.unregister:
 			if _, ok := h.clients[client]; ok {
-				fmt.Println("Hello?")
-				delete(h.clients, client)
+]				delete(h.clients, client)
 				close(client.send)
+				log.Printf("Client %s@%s closed\n", client.UserId, client.Address)
 			}
 		case message := <- h.broadcast:
 			for client := range h.clients {
 				select {
 				case client.send <- message:
 				default:
-					close(client.send)
 					delete(h.clients, client)
+					close(client.send)
+					log.Printf("Client %s@%s closed\n", client.UserId, client.Address)
 				}
 			}
 		}
