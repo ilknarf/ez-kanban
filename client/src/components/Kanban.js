@@ -1,9 +1,15 @@
 import React, { useState, useReducer }  from 'react';
 
 import { KanbanContainer } from '../styles/Kanban';
-
 import { DragDropContext } from 'react-beautiful-dnd';
+
 import Column from './Column';
+
+const address = process.env.REACT_APP_HOST_ADDRESS || 'localhost:8080';
+const ws = new WebSocket(`ws://${address}/wss`);
+ws.onopen = () => console.log(`websocket connected to ${address}`);
+
+window.ws = ws;
 
 const data = {
     items: {
@@ -53,7 +59,7 @@ function reducer(columns, result) {
         return columns;
     }
 
-    let col = {...columns}
+    let col = {...columns};
 
     const sourceId = result.source.droppableId;
     const destId = result.destination.droppableId;
@@ -77,7 +83,7 @@ function reducer(columns, result) {
     return col;
 }
 
-function Kanban() {
+function Kanban(props) {
     const [columns, colDispatch] = useReducer(reducer, data.columns);
 
     function onDragEnd(result) {
