@@ -22,7 +22,7 @@ func main() {
 	go hub.Run()
 
 	http.HandleFunc("/wss", server.NewWebSocketHandler(hub))
-	http.HandleFunc("/hello", func (w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Hello!")
 	})
 

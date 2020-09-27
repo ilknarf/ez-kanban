@@ -18,8 +18,8 @@ func addCard(r *http.Request, h *Hub) {
 	json.Unmarshal(b, card)
 
 	h.broadcast <- WebsocketRequest{
-		action:"AddCard",
-		objectKey: card.Id,
-		arguments:[]string{string(b)},
+		Action:"AddCard",
+		ObjectKey: card.Id,
+		Args:[]string{string(b)},
 	}
 }

@@ -5,7 +5,7 @@ type ServerResponse struct {
 }
 
 type WebsocketRequest struct {
-	action    string
-	objectKey string
-	arguments []string
+	Action    string
+	ObjectKey string
+	Args []string
 }

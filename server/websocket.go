@@ -53,11 +53,11 @@ func (c *WebSocketClient) readPump() {
 
 	for {
 		req := WebsocketRequest{}
-		err := c.conn.ReadJSON(req)
+		err := c.conn.ReadJSON(&req)
+
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error: %v", err)
-			}
+			log.Printf("error: %v", err)
+
 			break
 		}
 
