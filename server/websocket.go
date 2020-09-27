@@ -53,8 +53,8 @@ func (c *WebSocketClient) readPump() {
 
 	for {
 		req := WebsocketRequest{}
-		err := c.conn.ReadJSON(&req)
 
+		err := c.conn.ReadJSON(&req)
 		if err != nil {
 			log.Printf("error: %v", err)
 
@@ -87,10 +87,13 @@ func (c *WebSocketClient) writePump() {
 			for i := 0; i < n; i++ {
 				response = append(response, <-c.send)
 			}
-			var b []byte
-			json.Unmarshal(b, response)
 
-			c.conn.WriteMessage(websocket.TextMessage, b)
+			err := c.conn.WriteJSON(response)
+			if err != nil {
+				log.Println(err)
+				break
+			}
+
 			log.Printf("message %s relayed to %s@%s", string(b), c.UserId, c.Address)
 
 		case <-ticker.C:
