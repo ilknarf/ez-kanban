@@ -35,7 +35,7 @@ type WebSocketClient struct {
 	Address string
 	hub     *Hub
 	conn    *websocket.Conn
-	send    chan []byte
+	send    chan interface{}
 }
 
 // readPump runs one goroutine per connection, managing and sending wss messages
