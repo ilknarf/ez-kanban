@@ -35,7 +35,7 @@ type WebSocketClient struct {
 	Address string
 	hub     *Hub
 	conn    *websocket.Conn
-	send    chan interface{}
+	send    chan WebsocketRequest
 }
 
 // readPump runs one goroutine per connection, managing and sending wss messages
@@ -52,7 +52,8 @@ func (c *WebSocketClient) readPump() {
 	})
 
 	for {
-		_, b, err := c.conn.ReadMessage()
+		req := WebsocketRequest{}
+		err := c.conn.ReadJSON(req)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error: %v", err)
@@ -63,7 +64,7 @@ func (c *WebSocketClient) readPump() {
 		// TODO add backend logic
 		log.Printf("received message from `%s` at %s\n", c.UserId, c.Address)
 
-		c.hub.broadcast <- b
+		c.hub.broadcast <- req
 	}
 }
 
@@ -81,7 +82,7 @@ func (c *WebSocketClient) writePump() {
 				return
 			}
 
-			response := []interface{}{message}
+			response := []WebsocketRequest{message}
 			n := len(c.send)
 			for i := 0; i < n; i++ {
 				response = append(response, <-c.send)
@@ -90,7 +91,7 @@ func (c *WebSocketClient) writePump() {
 			json.Unmarshal(b, response)
 
 			c.conn.WriteMessage(websocket.TextMessage, b)
-			log.Printf("message relayed to client %s@%s", c.UserId, c.Address)
+			log.Printf("message %s relayed to %s@%s", string(b), c.UserId, c.Address)
 
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
@@ -118,7 +119,7 @@ func establishConnection(w http.ResponseWriter, r *http.Request, h *Hub) {
 		Address: source,
 		hub:     h,
 		conn:    conn,
-		send:    make(chan interface{}),
+		send:    make(chan WebsocketRequest),
 	}
 
 	h.register <- client

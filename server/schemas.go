@@ -7,5 +7,5 @@ type ServerResponse struct {
 type WebsocketRequest struct {
 	action    string
 	objectKey string
-	arguments []int
+	arguments []string
 }
