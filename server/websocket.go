@@ -102,7 +102,6 @@ func (c *WebSocketClient) writePump() {
 			}
 		}
 	}
-
 }
 
 func establishConnection(w http.ResponseWriter, r *http.Request, h *Hub) {
