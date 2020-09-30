@@ -7,10 +7,8 @@ import "time"
 type State struct {
 	MetaData
 
-	Todo       []Card
-	Waiting    []Card
-	InProgress []Card
-	Finished   []Card
+	Cards   []Card
+	Columns Columns
 }
 
 type MetaData struct {
@@ -27,6 +25,13 @@ type Card struct {
 	Id          string
 	DateCreated time.Time
 	DateUpdated time.Time
+}
+
+type Columns struct {
+	Todo       []string
+	Waiting    []string
+	InProgress []string
+	Finished   []string
 }
 
 // Request data structures

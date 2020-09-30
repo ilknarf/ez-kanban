@@ -1,6 +1,6 @@
 import React, { useState, useReducer }  from 'react';
 
-import { KanbanContainer } from '../styles/Kanban';
+import { KanbanButton, KanbanButtonContainer, KanbanContainer, KanbanWrapper } from '../styles/Kanban';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import Column from './Column';
@@ -8,8 +8,6 @@ import Column from './Column';
 const address = process.env.REACT_APP_HOST_ADDRESS || 'localhost:8080';
 const ws = new WebSocket(`ws://${address}/wss`);
 ws.onopen = () => console.log(`websocket connected to ${address}`);
-
-window.ws = ws;
 
 const data = {
     items: {
@@ -52,7 +50,7 @@ const data = {
         }
     },
     columnOrder: ['todo', 'waiting', 'inprogress', 'finished'],
-}
+};
 
 function reducer(columns, result) {
     if (result.destination === null) {
@@ -84,6 +82,7 @@ function reducer(columns, result) {
 }
 
 function Kanban(props) {
+
     const [columns, colDispatch] = useReducer(reducer, data.columns);
 
     function onDragEnd(result) {
@@ -91,16 +90,23 @@ function Kanban(props) {
     }
 
     return (
-        <KanbanContainer>
-            <DragDropContext onDragEnd={onDragEnd}>
-                {data.columnOrder.map(colId => (
-                        <Column key={colId} id={colId} name={columns[colId].name}>
-                            {columns[colId].items.map(key => data.items[key])}
-                        </Column>
-                    )
-                )}
-            </DragDropContext>
-        </KanbanContainer>
+        <KanbanWrapper>
+            <KanbanButtonContainer>
+                <KanbanButton>
+                    Hello
+                </KanbanButton>
+            </KanbanButtonContainer>
+            <KanbanContainer>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    {data.columnOrder.map(colId => (
+                            <Column key={colId} id={colId} name={columns[colId].name}>
+                                {columns[colId].items.map(key => data.items[key])}
+                            </Column>
+                        )
+                    )}
+                </DragDropContext>
+            </KanbanContainer>
+        </KanbanWrapper>
     );
 }
 

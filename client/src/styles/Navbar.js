@@ -7,7 +7,7 @@ const NavbarContainer = styled.nav`
      flex-direction: row;
      
      background-color: #77caea;
-`
+`;
 
 const NavbarButton = styled.button`
     display: block;
@@ -31,11 +31,11 @@ const NavbarButton = styled.button`
     &:hover {
         cursor: pointer;
     }
-`
+`;
 
 const MenuItemText = styled.h4`
     color: black;
-`
+`;
 
 const MenuButtonDiv = styled(NavbarButton)`
     border-radius: 2em;
@@ -50,10 +50,10 @@ const MenuButtonDiv = styled(NavbarButton)`
     &:hover ${MenuItemText} {
         color: #77caea;
     }
-`
+`;
 
 const MenuSpacer = styled.div`
     flex: 1;
-`
+`;
 
 export { NavbarContainer, NavbarButton, MenuButtonDiv, MenuSpacer, MenuItemText };

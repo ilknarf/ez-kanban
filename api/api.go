@@ -9,7 +9,7 @@ import (
 var card1 = Card{
 	Title:       "Title 1",
 	Description: "This is a description",
-	Id:          "String",
+	Id:          "String1",
 	DateCreated: time.Now(),
 	DateUpdated: time.Now(),
 }
@@ -17,7 +17,7 @@ var card1 = Card{
 var card2 = Card{
 	Title:       "Title 2",
 	Description: "This is another description",
-	Id:          "String",
+	Id:          "String2",
 	DateCreated: time.Now(),
 	DateUpdated: time.Now(),
 }
@@ -25,7 +25,7 @@ var card2 = Card{
 var card3 = Card{
 	Title:       "Title 3",
 	Description: "This is a description",
-	Id:          "String",
+	Id:          "String3",
 	DateCreated: time.Now(),
 	DateUpdated: time.Now(),
 }
@@ -40,10 +40,14 @@ var metadata = MetaData{
 
 var state = State{
 	MetaData:   metadata,
-	Todo:       []Card{card1},
-	Waiting:    []Card{card2, card3},
-	InProgress: []Card{},
-	Finished:   []Card{},
+
+	Cards: []Card{card1, card2, card3},
+	Columns: Columns{
+		Todo:       []string{"String1"},
+		Waiting:    []string{"String2", "String3"},
+		InProgress: []string{},
+		Finished:   []string{},
+	},
 }
 
 func GetSnapshot(index string) State {

@@ -10,17 +10,17 @@ const ColumnDiv = styled.div`
     
     display: flex;
     flex-direction: column;
-`
+`;
 
 const ListDiv=styled.div`
     flex: 1;
     
     display: flex;
     flex-direction: column;
-`
+`;
 
 const ColumnHeader = styled.h5`
     padding: 1rem;
-`
+`;
 
 export { ColumnDiv, ColumnHeader, ListDiv };
