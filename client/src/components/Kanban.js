@@ -53,14 +53,22 @@ const data = {
 };
 
 function reducer(columns, result) {
+    ws.send(JSON.stringify(result));
+
     if (result.destination === null) {
+        return columns;
+    }
+
+    const sourceId = result.source.droppableId;
+    const destId = result.destination.droppableId;
+
+    const valAtDest = columns[destId][result.destination.index];
+    if (valAtDest === result.draggableId) {
         return columns;
     }
 
     let col = {...columns};
 
-    const sourceId = result.source.droppableId;
-    const destId = result.destination.droppableId;
 
     if (result.source.droppableId === result.destination.droppableId) {
         const arr = col[sourceId].items;
