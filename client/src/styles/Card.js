@@ -20,16 +20,18 @@ const CardDiv = styled.div`
     box-shadow: 0px 1px ${props => props.isDragging? '5px 1px': '3px 0px'} #888888;
     transition: box-shadow 0.1s linear;
     
+    opacity: ${props => props.isDragging && props.draggingOver === null? '0.5': '1'};
+    
     padding: .5em 1em;
     margin: .25em .5em .5em;
     
     &:hover {
         background-color: aliceblue;
     }
-`
+`;
 
 const CardTitle = styled.h5`
     
-`
+`;
 
 export { CardDiv, CardTitle };

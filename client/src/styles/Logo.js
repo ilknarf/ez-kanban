@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const LogoText = styled.h1`
     color: white;    
-`
+`;
 
 const LogoDiv = styled.a`
     height: 2.5em;
@@ -18,6 +18,6 @@ const LogoDiv = styled.a`
         text-decoration: none;
         cursor: pointer;
     }
-`
+`;
 
 export { LogoText, LogoDiv };

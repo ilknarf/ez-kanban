@@ -82,22 +82,29 @@ function reducer(columns, result) {
 }
 
 function Kanban(props) {
-
+    const [dragging, setDragging] = useState(false);
     const [columns, colDispatch] = useReducer(reducer, data.columns);
+
+    function onDragStart() {
+        setDragging(true);
+    }
 
     function onDragEnd(result) {
         colDispatch(result);
+        setDragging(false);
     }
 
     return (
-        <KanbanWrapper>
+        <KanbanWrapper dragging={dragging}>
             <KanbanButtonContainer>
                 <KanbanButton>
-                    Hello
+                    <strong>
+                        Add Card
+                    </strong>
                 </KanbanButton>
             </KanbanButtonContainer>
             <KanbanContainer>
-                <DragDropContext onDragEnd={onDragEnd}>
+                <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
                     {data.columnOrder.map(colId => (
                             <Column key={colId} id={colId} name={columns[colId].name}>
                                 {columns[colId].items.map(key => data.items[key])}

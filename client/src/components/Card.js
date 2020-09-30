@@ -16,6 +16,7 @@ function Card(props) {
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                     isDragging={snapshot.isDragging}
+                    draggingOver={snapshot.draggingOver}
                 >
                     <CardTitle>
                         {title}
