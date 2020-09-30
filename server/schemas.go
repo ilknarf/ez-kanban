@@ -1,7 +1,10 @@
 package server
 
-type ServerResponse struct {
-	message string
+type Arguments = interface{}
+
+type WebSocketResponse struct {
+	MessageType string
+	Arguments
 }
 
 type WebsocketRequest struct {
