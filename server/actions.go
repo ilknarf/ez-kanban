@@ -15,7 +15,7 @@ func addCard(r *http.Request, h *Hub) {
 
 	h.broadcast <- WebSocketResponse{
 		MessageType:"AddCard",
-		Arguments: struct {
+		Data: struct {
 			ObjectKey string
 			Card api.Card
 		}{

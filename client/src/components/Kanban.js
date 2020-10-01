@@ -1,47 +1,32 @@
-import React, { useState, useReducer }  from 'react';
+import React, {useReducer, useState} from 'react';
 
-import { KanbanButton, KanbanButtonContainer, KanbanContainer, KanbanWrapper } from '../styles/Kanban';
-import { DragDropContext } from 'react-beautiful-dnd';
+import {getServerSideState} from "../controllers/websockets";
+
+import {KanbanButton, KanbanButtonContainer, KanbanContainer, KanbanWrapper} from '../styles/Kanban';
+import {DragDropContext} from 'react-beautiful-dnd';
 
 import Column from './Column';
 
 const address = process.env.REACT_APP_HOST_ADDRESS || 'localhost:8080';
 const ws = new WebSocket(`ws://${address}/wss`);
-ws.onopen = () => console.log(`websocket connected to ${address}`);
 
-const data = {
-    items: {
-        PFX1: {
-            id: 'PFX1',
-            title: 'hello',
-            content: 'nothing',
-        },
-        PFX2: {
-            id: 'PFX2',
-            title: 'goodbye',
-            content: 'idk',
-        },
-        PFX3: {
-            id: 'PFX3',
-            title: 'wot',
-            content: 'something?',
-        },
-    },
+const defaultData = {
+    items: {},
     columns: {
         todo: {
             name: 'To Do',
             id: 'todo',
-            items: ['PFX3'],
+            items: [],
         },
         waiting: {
             name: 'Waiting/Blocked',
             id: 'waiting',
             items: [],
         },
-        inprogress: {
+        inProgress: {
             name: 'In Progress',
-            id: 'inprogress',
-            items: ['PFX1', 'PFX2'],
+            id: 'inProgress',
+            items: [],
         },
         finished: {
             name: 'Finished',
@@ -49,49 +34,109 @@ const data = {
             items: [],
         }
     },
-    columnOrder: ['todo', 'waiting', 'inprogress', 'finished'],
+    columnOrder: ['todo', 'waiting', 'inProgress', 'finished'],
 };
 
 function reducer(columns, result) {
-    ws.send(JSON.stringify(result));
+    try {
 
-    if (result.destination === null) {
+        // if (result.messageType === 'GetState') {
+        //     console.log(result.data);
+        //     return result.data.columns;
+        // }
+
+        if (result.request === 'SetColumns') {
+            return {
+                todo: {
+                    name: 'To Do',
+                    id: 'todo',
+                    items: result.columns.todo,
+                },
+                waiting: {
+                    name: 'Waiting',
+                    id: 'waiting',
+                    items: result.columns.waiting,
+                },
+                inProgress: {
+                    name: 'In Progress',
+                    id: 'inProgress',
+                    items: result.columns.inProgress,
+                },
+                finished: {
+                    name: 'Finished',
+                    id: 'finished',
+                    items: result.columns.finished,
+                },
+            };
+        }
+
+        if (result.destination === null) {
+            return columns;
+        }
+
+        const sourceId = result.source.droppableId;
+        const destId = result.destination.droppableId;
+
+        const valAtDest = columns[destId][result.destination.index];
+        if (valAtDest === result.draggableId) {
+            return columns;
+        }
+
+        let col = {...columns};
+
+
+        if (result.source.droppableId === result.destination.droppableId) {
+            const arr = col[sourceId].items;
+
+            const temp = arr[result.source.index];
+            arr[result.source.index] = arr[result.destination.index];
+            arr[result.destination.index] = temp;
+        } else {
+            let sourceArr = col[sourceId].items;
+            const sourceIndex = result.source.index;
+            const item = sourceArr[sourceIndex];
+            sourceArr.splice(sourceIndex, 1);
+
+            let destArr = col[destId].items;
+            destArr.splice(result.destination.index, 0, item);
+        }
+
+        return col;
+    } catch (e) {
+        console.error(e, result);
         return columns;
     }
-
-    const sourceId = result.source.droppableId;
-    const destId = result.destination.droppableId;
-
-    const valAtDest = columns[destId][result.destination.index];
-    if (valAtDest === result.draggableId) {
-        return columns;
-    }
-
-    let col = {...columns};
-
-
-    if (result.source.droppableId === result.destination.droppableId) {
-        const arr = col[sourceId].items;
-
-        const temp = arr[result.source.index];
-        arr[result.source.index] = arr[result.destination.index];
-        arr[result.destination.index] = temp;
-    } else {
-        let sourceArr = col[sourceId].items;
-        const sourceIndex = result.source.index;
-        const item = sourceArr[sourceIndex];
-        sourceArr.splice(sourceIndex, 1);
-
-        let destArr = col[destId].items;
-        destArr.splice(result.destination.index, 0, item);
-    }
-
-    return col;
 }
 
 function Kanban(props) {
     const [dragging, setDragging] = useState(false);
-    const [columns, colDispatch] = useReducer(reducer, data.columns);
+    const [columns, colDispatch] = useReducer(reducer, defaultData.columns);
+    const [data, setData] = useState(defaultData);
+
+    ws.onopen = () => getServerSideState(ws, 'hello'); // TODO replace with ID
+    ws.onmessage = (event) => {
+        if (event.returnValue) {
+            try {
+                const data = JSON.parse(event.data);
+                let firstMessage = data[0];
+                if (firstMessage.messageType === 'SetState') {
+                    const columnOrder = ['todo', 'waiting', 'inProgress', 'finished'];
+                    setData({
+                        items: firstMessage.data.cards,
+                        columnOrder,
+                    });
+
+                    firstMessage.data.request = 'SetColumns';
+                    colDispatch(firstMessage.data);
+                    console.log(data);
+                } else{
+                    data.map(message => colDispatch(message.data));
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    };
 
     function onDragStart() {
         setDragging(true);

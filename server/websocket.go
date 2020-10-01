@@ -19,7 +19,7 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
-	maxMessageSize = 512
+	maxMessageSize = 2048
 )
 
 var upgrader = websocket.Upgrader{
@@ -55,8 +55,13 @@ func (c *WebSocketClient) readPump() {
 		req := WebsocketRequest{}
 
 		err := c.conn.ReadJSON(&req)
+
+		//_, b, err := c.conn.ReadMessage()
+		//
+		//fmt.Println(string(b))
+
 		if err != nil {
-			log.Printf("error: %v", err)
+			log.Printf("unmarshalling error: %v", err)
 
 			break
 		}
@@ -65,8 +70,8 @@ func (c *WebSocketClient) readPump() {
 		log.Printf("received message from `%s` at %s\n", c.UserId, c.Address)
 
 		res := WebSocketResponse {
-			MessageType: "GetState",
-			Arguments: api.GetSnapshot("hello"),
+			MessageType: "SetState",
+			Data: api.GetSnapshot("hello"),
 		}
 
 		c.hub.broadcast <- res

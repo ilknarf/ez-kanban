@@ -7,43 +7,43 @@ import "time"
 type State struct {
 	MetaData
 
-	Cards   []Card
-	Columns Columns
+	Cards   map[string]Card  `json:"cards"`
+	Columns Columns `json:"columns"`
 }
 
 type MetaData struct {
-	Name        string
-	Tag         string
-	Id          string
-	DateCreated time.Time
-	DateUpdated time.Time
+	Name        string `json:"name"`
+	Tag         string `json:"tag"`
+	Id          string `json:"id"`
+	DateCreated time.Time `json:"dateCreated"`
+	DateUpdated time.Time `json:"dateUpdated"`
 }
 
 type Card struct {
-	Title       string
-	Description string
-	Id          string
-	DateCreated time.Time
-	DateUpdated time.Time
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Id          string `json:"id"`
+	DateCreated time.Time `json:"dateCreated"`
+	DateUpdated time.Time `json:"dateUpdated"`
 }
 
 type Columns struct {
-	Todo       []string
-	Waiting    []string
-	InProgress []string
-	Finished   []string
+	Todo       []string `json:"todo"`
+	Waiting    []string `json:"waiting"`
+	InProgress []string `json:"inProgress"`
+	Finished   []string `json:"finished"`
 }
 
 // Request data structures
 
 type MoveCardRequest struct {
-	BoardId   string
-	CardId    string
-	PrevIndex string
-	NewIndex  string
+	BoardId   string `json:"boardId"`
+	CardId    string `json:"cardId"`
+	PrevIndex string `json:"prevIndex"`
+	NewIndex  string `json:"newIndex"`
 }
 
 // probaby should add more metadata
 type AddCardRequest struct {
-	NewCard Card
+	NewCard Card `json:"newCard"`
 }

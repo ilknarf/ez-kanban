@@ -6,7 +6,7 @@ import { Draggable } from 'react-beautiful-dnd';
 
 function Card(props) {
     const { card, index } = props;
-    const { title, id, content } = card;
+    const { title, id, description } = card;
 
     return(
         <Draggable draggableId={id} index={index}>
@@ -21,7 +21,7 @@ function Card(props) {
                     <CardTitle>
                         {title}
                     </CardTitle>
-                    {content}
+                    {description}
                 </CardDiv>
             )}
         </Draggable>

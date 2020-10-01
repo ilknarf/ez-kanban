@@ -41,7 +41,11 @@ var metadata = MetaData{
 var state = State{
 	MetaData:   metadata,
 
-	Cards: []Card{card1, card2, card3},
+	Cards: map[string]Card{
+		card1.Id: card1,
+		card2.Id: card2,
+		card3.Id: card3,
+	},
 	Columns: Columns{
 		Todo:       []string{"String1"},
 		Waiting:    []string{"String2", "String3"},

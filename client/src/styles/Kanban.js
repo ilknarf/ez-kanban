@@ -27,6 +27,7 @@ const KanbanButton = styled.button`
     
     background-color: #e3e1de;
     color: black;
+    box-shadow: 0px 1px 2px 0px #888888;
     border: 0px;
     border-radius: 4px;
         
@@ -36,7 +37,7 @@ const KanbanButton = styled.button`
     }
     
     &:hover {
-        box-shadow: 0px 1px 2px 0px #888888;
+        box-shadow: 0px 1px 4px 0px #888888;
         cursor: pointer;
     }
 `;
