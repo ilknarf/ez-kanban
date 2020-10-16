@@ -1,26 +1,25 @@
 package server
 
 import (
-	"github.com/ilknarf/ez-kanban/api"
 	"log"
 	"net/http"
 )
 
 func addCard(r *http.Request, h *Hub) {
-	card, err := api.AddCard(r)
+	card, err := AddCard(r)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	h.broadcast <- WebSocketResponse{
-		MessageType:"AddCard",
+	h.broadcast <- &WebSocketResponse{
+		MessageType: "AddCard",
 		Data: struct {
 			ObjectKey string
-			Card api.Card
+			Card      Card
 		}{
 			ObjectKey: card.Id,
-			Card: card,
+			Card:      card,
 		},
 	}
 }

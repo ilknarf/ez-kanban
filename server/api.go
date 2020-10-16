@@ -1,6 +1,7 @@
-package api
+package server
 
 import (
+	"log"
 	"net/http"
 	"time"
 )
@@ -39,7 +40,7 @@ var metadata = MetaData{
 }
 
 var state = State{
-	MetaData:   metadata,
+	MetaData: metadata,
 
 	Cards: map[string]Card{
 		card1.Id: card1,
@@ -54,14 +55,46 @@ var state = State{
 	},
 }
 
-func GetSnapshot(index string) State {
-	return state
+func GetState(c *WebSocketClient) error {
+	res := &WebSocketResponse{
+		MessageType: "SetState",
+		Data:        state,
+	}
+
+	// only send to requester
+	c.send <- res
+	return nil
 }
 
 func AddCard(r *http.Request) (Card, error) {
 	return Card{}, nil
 }
 
-func MoveCard(r *http.Request) error {
+func MoveCard(c *WebSocketClient, request *WebSocketRequest) error {
+	res := &WebSocketResponse{
+		MessageType: "MoveCard",
+		Data:        request,
+	}
+
+	c.hub.broadcast <- res
+	return nil
+}
+
+func HandleRequest(c *WebSocketClient, request *WebSocketRequest) error {
+	switch request.Action {
+	case "MoveCard":
+		log.Println("handling MoveCard request")
+		if err := MoveCard(c, request); err != nil {
+			log.Printf("unable to handle MoveCard: %v", err)
+		}
+	case "GetState":
+		log.Println("handling GetState request")
+		if err := GetState(c); err != nil {
+			log.Printf("unable to handle GetState: %v", err)
+		}
+	default:
+		log.Printf("ERROR: unable to process action, received %v", request.Action)
+	}
+
 	return nil
 }

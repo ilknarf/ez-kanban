@@ -1,9 +1,18 @@
 function getServerSideState(ws, id) {
-    const res = {
+    const req = {
         action: 'GetState',
     };
 
-    ws.send(JSON.stringify(res));
+    ws.send(JSON.stringify(req));
 }
 
-export { getServerSideState };
+function sendMoveRequest(ws, moveRequest) {
+    const req = {
+        action: 'MoveCard',
+        args: [moveRequest],
+    };
+
+    ws.send(JSON.stringify(req));
+}
+
+export { getServerSideState, sendMoveRequest };

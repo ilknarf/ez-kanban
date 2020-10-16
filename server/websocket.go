@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/ilknarf/ez-kanban/api"
 	"log"
 	"net/http"
 	"time"
@@ -35,7 +34,7 @@ type WebSocketClient struct {
 	Address string
 	hub     *Hub
 	conn    *websocket.Conn
-	send    chan WebSocketResponse
+	send    chan *WebSocketResponse
 }
 
 // readPump runs one goroutine per connection, managing and sending wss messages
@@ -48,11 +47,12 @@ func (c *WebSocketClient) readPump() {
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error {
-		c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil
+		c.conn.SetReadDeadline(time.Now().Add(pongWait))
+		return nil
 	})
 
 	for {
-		req := WebsocketRequest{}
+		req := WebSocketRequest{}
 
 		err := c.conn.ReadJSON(&req)
 
@@ -69,12 +69,7 @@ func (c *WebSocketClient) readPump() {
 		// TODO add backend logic
 		log.Printf("received message from `%s` at %s\n", c.UserId, c.Address)
 
-		res := WebSocketResponse {
-			MessageType: "SetState",
-			Data: api.GetSnapshot("hello"),
-		}
-
-		c.hub.broadcast <- res
+		HandleRequest(c, &req)
 	}
 }
 
@@ -92,7 +87,7 @@ func (c *WebSocketClient) writePump() {
 				return
 			}
 
-			response := []WebSocketResponse{message}
+			response := []*WebSocketResponse{message}
 			n := len(c.send)
 			for i := 0; i < n; i++ {
 				response = append(response, <-c.send)
@@ -131,7 +126,7 @@ func establishConnection(w http.ResponseWriter, r *http.Request, h *Hub) {
 		Address: source,
 		hub:     h,
 		conn:    conn,
-		send:    make(chan WebSocketResponse),
+		send:    make(chan *WebSocketResponse),
 	}
 
 	h.register <- client

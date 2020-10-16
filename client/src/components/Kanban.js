@@ -1,9 +1,9 @@
 import React, {useReducer, useState} from 'react';
 
-import {getServerSideState} from "../controllers/websockets";
+import { getServerSideState, sendMoveRequest } from "../controllers/websockets";
 
-import {KanbanButton, KanbanButtonContainer, KanbanContainer, KanbanWrapper} from '../styles/Kanban';
-import {DragDropContext} from 'react-beautiful-dnd';
+import { KanbanButton, KanbanButtonContainer, KanbanContainer, KanbanWrapper } from '../styles/Kanban';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 import Column from './Column';
 
@@ -45,7 +45,7 @@ function reducer(columns, result) {
         //     return result.data.columns;
         // }
 
-        if (result.request === 'SetColumns') {
+        if (result.request === 'SetState') {
             return {
                 todo: {
                     name: 'To Do',
@@ -70,6 +70,14 @@ function reducer(columns, result) {
             };
         }
 
+        let fromRemote = false;
+
+        if (result.request === 'MoveCard') {
+            result = result.args[0];
+            console.log(result);
+            fromRemote = true;
+        }
+
         if (result.destination === null) {
             return columns;
         }
@@ -84,23 +92,44 @@ function reducer(columns, result) {
 
         let col = {...columns};
 
+        // send WebSocket request
 
         if (result.source.droppableId === result.destination.droppableId) {
             const arr = col[sourceId].items;
 
-            const temp = arr[result.source.index];
-            arr[result.source.index] = arr[result.destination.index];
-            arr[result.destination.index] = temp;
+            if (result.source.index !== result.destination.index) {
+                const temp = arr[result.source.index];
+
+                // check if valid request
+                if (result.draggableId === arr[result.source.index]) {
+                    arr[result.source.index] = arr[result.destination.index];
+                    arr[result.destination.index] = temp;
+
+                    // send server request if original request
+                    if (!fromRemote) {
+                        sendMoveRequest(ws, result);
+                    }
+                }
+            }
         } else {
             let sourceArr = col[sourceId].items;
             const sourceIndex = result.source.index;
             const item = sourceArr[sourceIndex];
-            sourceArr.splice(sourceIndex, 1);
 
-            let destArr = col[destId].items;
-            destArr.splice(result.destination.index, 0, item);
+            // check if valid request
+            if (sourceArr[sourceIndex] === result.draggableId) {
+                sourceArr.splice(sourceIndex, 1);
+
+                let destArr = col[destId].items;
+                destArr.splice(result.destination.index, 0, item);
+
+                if (!fromRemote) {
+                    sendMoveRequest(ws, result);
+                }
+            }
         }
 
+        console.log(col);
         return col;
     } catch (e) {
         console.error(e, result);
@@ -118,20 +147,21 @@ function Kanban(props) {
         if (event.returnValue) {
             try {
                 const data = JSON.parse(event.data);
-                let firstMessage = data[0];
-                if (firstMessage.messageType === 'SetState') {
-                    const columnOrder = ['todo', 'waiting', 'inProgress', 'finished'];
-                    setData({
-                        items: firstMessage.data.cards,
-                        columnOrder,
-                    });
+                data.forEach(message => {
+                    if (message.messageType === 'SetState') {
+                        const columnOrder = ['todo', 'waiting', 'inProgress', 'finished'];
+                        setData({
+                            items: message.data.cards,
+                            columnOrder,
+                        });
 
-                    firstMessage.data.request = 'SetColumns';
-                    colDispatch(firstMessage.data);
-                    console.log(data);
-                } else{
-                    data.map(message => colDispatch(message.data));
-                }
+                        message.data.request = 'SetState';
+                        colDispatch(message.data);
+                    } else {
+                        message.data.request = message.messageType;
+                        colDispatch(message.data);
+                    }
+                });
             } catch (e) {
                 console.error(e);
             }
